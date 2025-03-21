@@ -1,0 +1,44 @@
+agent:
+  name: XGBForecastingAgent
+  description: 'agent to perform time series forecasting using XGBoost within darts'
+
+
+templates:
+
+- template_name: InputTemplate
+  class_name: InputTemplate
+  attributes: {}
+
+- template_name: TimeSeriesDataframeLoader
+  class_name: TimeSeriesDataframeLoader
+  template_input: InputTemplate
+  attributes:
+    apply_to: ["content", "past_covariates", "future_covariates"]
+    from_dataframe_kwargs:
+      time_col: "Date"
+      fill_missing_dates: True
+      freq: "D"
+
+- template_name: MissingValuesFiller
+  class_name: MissingValuesFillerWrapper
+  template_input: TimeSeriesDataframeLoader
+  attributes:
+    method: "transform"
+    missingvaluesfiller_init: {}
+    apply_to: ["content", "past_covariates", "future_covariates"]
+    transform_kwargs:
+      method: "linear"
+
+- template_name: TimeSeries
+  class_name: XGBModelWrapper
+  template_input: MissingValuesFiller
+  attributes:
+    forecast_horizon: 100
+    xgbmodel_init:
+      lags: 30
+      lags_past_covariates: 30
+      output_chunk_length: 100
+      random_state: 42
+      n_estimators: 200
+      learning_rate: 0.1
+      max_depth: 6

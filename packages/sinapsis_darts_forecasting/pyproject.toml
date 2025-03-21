@@ -1,0 +1,37 @@
+[project]
+name = "sinapsis-darts-forecasting"
+version = "0.1.0"
+description = "Module for handling time series data and forecasting using Darts."
+authors = [
+    {name = "SinapsisAI", email = "dev@sinapsis.tech"},
+]
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+dependencies = [
+    "sinapsis>=0.1.1",
+]
+[project.optional-dependencies]
+darts = [
+    "u8darts[all]>=0.31.0",
+]
+pandas = [
+    "pandas>=2.2.3",
+]
+all = ["sinapsis-darts-forecasting[pandas,darts]"]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+license-files = []
+
+[[tool.uv.index]]
+url = "https://pypi.sinapsis.tech/"
+
+[project.urls]
+Homepage = "https://sinapsis.tech"
+Documentation = "https://docs.sinapsis.tech/docs"
+Tutorials = "https://docs.sinapsis.tech/tutorials"
+Repository = "https://github.com/Sinapsis-AI/sinapsis-time-series-forecasting.git"

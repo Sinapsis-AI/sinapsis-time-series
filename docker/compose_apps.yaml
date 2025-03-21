@@ -1,0 +1,20 @@
+services:
+
+  sinapsis-darts-forecasting:
+    extends:
+      service: sinapsis-time-series-forecasting-main
+      file: compose.yaml
+    image: sinapsis-darts-forecasting:dev-cuda12.4
+    container_name: sinapsis-darts-forecasting
+    environment:
+      AGENT_CONFIG_PATH: /app/sinapsis_darts_forecasting/configs/time_series_lstm.yml
+    volumes:
+      - "../packages/sinapsis_darts_forecasting/src/sinapsis_darts_forecasting/configs:/app/sinapsis_darts_forecasting/configs/"
+      - "../webapps:/app/webapps"
+    network_mode: "host"
+
+  sinapsis-darts-forecasting-gradio:
+    extends:
+      service: sinapsis-darts-forecasting
+    container_name: sinapsis-darts-forecasting-gradio
+    command: python3 webapps/darts_time_series_gradio_app.py

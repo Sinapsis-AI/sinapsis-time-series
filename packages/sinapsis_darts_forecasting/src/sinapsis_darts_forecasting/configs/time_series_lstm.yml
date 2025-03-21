@@ -1,0 +1,67 @@
+agent:
+  name: LSTMForecastingAgent
+  description: 'agent to perform time series forecasting using the LSTM model from darts'
+
+templates:
+
+- template_name: InputTemplate
+  class_name: InputTemplate
+  attributes: {}
+- template_name: TimeSeriesDataframeLoader
+  class_name: TimeSeriesDataframeLoader
+  template_input: InputTemplate
+  attributes:
+    apply_to: ["content", "past_covariates", "future_covariates"]
+    from_dataframe_kwargs:
+      time_col: "date"
+      fill_missing_dates: True
+      freq: "min"
+      value_cols: ["open", "high", "low", "close", "Volume BTC", "Volume USD"]
+
+- template_name: MissingValuesFiller
+  class_name: MissingValuesFillerWrapper
+  template_input: TimeSeriesDataframeLoader
+  attributes:
+    method: "transform"
+    missingvaluesfiller_init: {}
+    apply_to: ["content", "past_covariates", "future_covariates"]
+    transform_kwargs:
+      method: "linear"
+
+- template_name: Scaler
+  class_name: ScalerWrapper
+  template_input: MissingValuesFiller
+  attributes:
+    method: "fit_transform"
+    scaler_init: {}
+    apply_to: ["content", "past_covariates", "future_covariates"]
+    params_key: "scaler"
+
+- template_name: TimeSeries
+  class_name: RNNModelWrapper
+  template_input: Scaler
+  attributes:
+    forecast_horizon: 100
+    rnnmodel_init:
+      input_chunk_length: 30
+      model: "LSTM"
+      hidden_dim: 50
+      n_rnn_layers: 2
+      dropout: 0.2
+      training_length: 100
+      batch_size: 32
+      n_epochs: 50
+      optimizer_kwargs:
+        "lr": 0.001
+      random_state: 42
+      pl_trainer_kwargs:
+        accelerator: "gpu"
+
+- template_name: Unscaler
+  class_name: ScalerWrapper
+  template_input: TimeSeries
+  attributes:
+    method: "inverse_transform"
+    scaler_init: {}
+    apply_to: ["content", "past_covariates", "future_covariates", "predictions"]
+    params_key: "scaler"
