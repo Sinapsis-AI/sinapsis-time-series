@@ -1,5 +1,5 @@
 [project]
-name = "sinapsis-time-series-forecasting"
+name = "sinapsis-time-series"
 version = "0.1.0"
 description = "Module that contains different packages to perform time-series-related operations through Sinapsis templates."
 authors = [
@@ -20,7 +20,7 @@ webapp-gradio = [
 
 all = [
     "sinapsis-darts-forecasting[all]",
-    "sinapsis-time-series-forecasting[webapp-gradio]",
+    "sinapsis-time-series[webapp-gradio]",
 ]
 [tool.uv.workspace]
 members = ["packages/*"]
@@ -76,4 +76,4 @@ license-files = []
 Homepage = "https://sinapsis.tech"
 Documentation = "https://docs.sinapsis.tech/docs"
 Tutorials = "https://docs.sinapsis.tech/tutorials"
-Repository = "https://github.com/Sinapsis-AI/sinapsis-time-series-forecasting.git"
+Repository = "https://github.com/Sinapsis-AI/sinapsis-time-series.git"

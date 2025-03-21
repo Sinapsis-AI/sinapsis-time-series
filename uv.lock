@@ -10,7 +10,7 @@ resolution-markers = [
 [manifest]
 members = [
     "sinapsis-darts-forecasting",
-    "sinapsis-time-series-forecasting",
+    "sinapsis-time-series",
 ]
 
 [[package]]
@@ -2448,7 +2448,7 @@ requires-dist = [
 ]
 
 [[package]]
-name = "sinapsis-time-series-forecasting"
+name = "sinapsis-time-series"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
@@ -2478,7 +2478,7 @@ requires-dist = [
     { name = "matplotlib", marker = "extra == 'webapp-gradio'", specifier = ">=3.9.2" },
     { name = "sinapsis", specifier = ">=0.1.1" },
     { name = "sinapsis-darts-forecasting", extras = ["all"], marker = "extra == 'all'", editable = "packages/sinapsis_darts_forecasting" },
-    { name = "sinapsis-time-series-forecasting", extras = ["webapp-gradio"], marker = "extra == 'all'" },
+    { name = "sinapsis-time-series", extras = ["webapp-gradio"], marker = "extra == 'all'" },
 ]
 
 [package.metadata.requires-dev]
