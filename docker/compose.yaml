@@ -1,7 +1,7 @@
 services:
 
-  sinapsis-time-series-forecasting-main: &default
-    image: sinapsis-time-series-forecasting:base
+  sinapsis-time-series-main: &default
+    image: sinapsis-time-series:base
     build:
       context: ../
       dockerfile: docker/Dockerfile
