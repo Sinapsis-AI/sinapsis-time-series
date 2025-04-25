@@ -245,7 +245,7 @@ NOTE: The url can be different, check the output of the terminal
 ```bash
 Running on local URL:  http://127.0.0.1:7860
 ```
-
+</details>
 
 <h2 id="documentation">📙 Documentation</h2>
 
