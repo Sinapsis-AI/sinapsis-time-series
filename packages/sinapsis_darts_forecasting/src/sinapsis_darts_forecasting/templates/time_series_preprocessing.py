@@ -7,16 +7,16 @@ from darts import TimeSeries
 from darts.dataprocessing import transformers
 from pydantic import Field
 from sinapsis_core.data_containers.data_packet import DataContainer, TimeSeriesPacket
+from sinapsis_core.template_base.base_models import (
+    TemplateAttributes,
+    TemplateAttributeType,
+)
 from sinapsis_core.template_base.dynamic_template import (
     BaseDynamicWrapperTemplate,
     WrapperEntryConfig,
 )
 from sinapsis_core.template_base.dynamic_template_factory import make_dynamic_template
-from sinapsis_core.template_base.template import (
-    Template,
-    TemplateAttributes,
-    TemplateAttributeType,
-)
+from sinapsis_core.template_base.template import Template
 from sinapsis_core.utils.env_var_keys import SINAPSIS_BUILD_DOCS
 
 

@@ -3,12 +3,13 @@
 from darts import TimeSeries
 from darts import models as darts_models
 from sinapsis_core.data_containers.data_packet import DataContainer, TimeSeriesPacket
+from sinapsis_core.template_base.base_models import TemplateAttributes
 from sinapsis_core.template_base.dynamic_template import (
     BaseDynamicWrapperTemplate,
     WrapperEntryConfig,
 )
 from sinapsis_core.template_base.dynamic_template_factory import make_dynamic_template
-from sinapsis_core.template_base.template import Template, TemplateAttributes
+from sinapsis_core.template_base.template import Template
 from sinapsis_core.utils.env_var_keys import SINAPSIS_BUILD_DOCS
 
 EXCLUDED_MODELS = [

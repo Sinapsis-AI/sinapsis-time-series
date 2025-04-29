@@ -1,12 +1,12 @@
 [project]
 name = "sinapsis-time-series"
-version = "0.1.0"
+version = "0.1.1"
 description = "Module that contains different packages to perform time-series-related operations through Sinapsis templates."
 authors = [
     {name = "SinapsisAI", email = "dev@sinapsis.tech"},
 ]
 readme = "README.md"
-license = { file = "LICENSE" }
+license-files = ["LICENSE"]
 requires-python = ">=3.10"
 dependencies = [
     "sinapsis>=0.1.1",
@@ -14,8 +14,8 @@ dependencies = [
 
 [project.optional-dependencies]
 webapp-gradio = [
-    "gradio>=5.12.0",
     "matplotlib>=3.9.2",
+    "sinapsis[webapp]>=0.2.7",
 ]
 
 all = [
@@ -71,7 +71,6 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 packages = { find = { where = ["packages"] } }
-license-files = []
 [project.urls]
 Homepage = "https://sinapsis.tech"
 Documentation = "https://docs.sinapsis.tech/docs"

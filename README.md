@@ -5,7 +5,7 @@
     src="https://github.com/Sinapsis-AI/brand-resources/blob/main/sinapsis_logo/4x/logo.png?raw=true"
     alt="" width="300">
 </a><br>
-Sinapsis Time Series
+Sinapsis Time Series Forecasting
 <br>
 </h1>
 

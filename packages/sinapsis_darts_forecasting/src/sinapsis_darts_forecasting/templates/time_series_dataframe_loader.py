@@ -6,7 +6,8 @@ import pandas as pd
 from darts import TimeSeries
 from pydantic import Field
 from sinapsis_core.data_containers.data_packet import DataContainer, TimeSeriesPacket
-from sinapsis_core.template_base.template import Template, TemplateAttributes
+from sinapsis_core.template_base.base_models import TemplateAttributes
+from sinapsis_core.template_base.template import Template
 
 
 class TimeSeriesDataframeLoader(Template):

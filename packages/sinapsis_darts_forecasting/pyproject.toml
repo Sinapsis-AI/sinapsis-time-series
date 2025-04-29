@@ -1,6 +1,6 @@
 [project]
 name = "sinapsis-darts-forecasting"
-version = "0.1.0"
+version = "0.1.1"
 description = "Module for handling time series data and forecasting using Darts."
 authors = [
     {name = "SinapsisAI", email = "dev@sinapsis.tech"},
@@ -24,8 +24,6 @@ all = ["sinapsis-darts-forecasting[pandas,darts]"]
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools]
-license-files = []
 
 [[tool.uv.index]]
 url = "https://pypi.sinapsis.tech/"

@@ -2,7 +2,7 @@ services:
 
   sinapsis-darts-forecasting:
     extends:
-      service: sinapsis-time-series-forecasting-main
+      service: sinapsis-time-series-main
       file: compose.yaml
     image: sinapsis-darts-forecasting:dev-cuda12.4
     container_name: sinapsis-darts-forecasting
