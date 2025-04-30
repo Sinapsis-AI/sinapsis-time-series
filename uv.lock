@@ -2524,7 +2524,7 @@ wheels = [
 
 [[package]]
 name = "sinapsis-darts-forecasting"
-version = "0.1.1"
+version = "0.1.2"
 source = { editable = "packages/sinapsis_darts_forecasting" }
 dependencies = [
     { name = "sinapsis" },
@@ -2552,7 +2552,7 @@ requires-dist = [
 
 [[package]]
 name = "sinapsis-time-series"
-version = "0.1.1"
+version = "0.1.2"
 source = { editable = "." }
 dependencies = [
     { name = "sinapsis" },
