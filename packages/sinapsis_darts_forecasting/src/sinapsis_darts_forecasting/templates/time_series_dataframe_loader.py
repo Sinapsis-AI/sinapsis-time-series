@@ -6,7 +6,7 @@ import pandas as pd
 from darts import TimeSeries
 from pydantic import Field
 from sinapsis_core.data_containers.data_packet import DataContainer, TimeSeriesPacket
-from sinapsis_core.template_base.base_models import TemplateAttributes
+from sinapsis_core.template_base.base_models import OutputTypes, TemplateAttributes, UIPropertiesMetadata
 from sinapsis_core.template_base.template import Template
 
 
@@ -33,7 +33,7 @@ class TimeSeriesDataframeLoader(Template):
                 freq: "D"
     """
 
-    CATEGORY = "TimeSeries"
+    UIProperties = UIPropertiesMetadata(category="Darts", output_type=OutputTypes.TIMESERIES)
 
     class AttributesBaseModel(TemplateAttributes):
         """Defines the attributes required for the TimeSeriesDataframeLoader template.

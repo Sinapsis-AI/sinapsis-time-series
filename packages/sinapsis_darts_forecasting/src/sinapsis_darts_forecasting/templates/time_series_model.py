@@ -3,7 +3,7 @@
 from darts import TimeSeries
 from darts import models as darts_models
 from sinapsis_core.data_containers.data_packet import DataContainer, TimeSeriesPacket
-from sinapsis_core.template_base.base_models import TemplateAttributes
+from sinapsis_core.template_base.base_models import OutputTypes, TemplateAttributes, UIPropertiesMetadata
 from sinapsis_core.template_base.dynamic_template import (
     BaseDynamicWrapperTemplate,
     WrapperEntryConfig,
@@ -49,7 +49,7 @@ class TimeSeriesModel(BaseDynamicWrapperTemplate):
     If you want to see all available models, please visit: https://unit8co.github.io/darts/generated_api/darts.models.forecasting.html
     """
 
-    CATEGORY = "TimeSeries"
+    UIProperties = UIPropertiesMetadata(category="Darts", output_type=OutputTypes.TIMESERIES)
     WrapperEntry = WrapperEntryConfig(wrapped_object=darts_models, exclude_module_atts=EXCLUDED_MODELS)
 
     class AttributesBaseModel(TemplateAttributes):

@@ -8,8 +8,10 @@ from darts.dataprocessing import transformers
 from pydantic import Field
 from sinapsis_core.data_containers.data_packet import DataContainer, TimeSeriesPacket
 from sinapsis_core.template_base.base_models import (
+    OutputTypes,
     TemplateAttributes,
     TemplateAttributeType,
+    UIPropertiesMetadata,
 )
 from sinapsis_core.template_base.dynamic_template import (
     BaseDynamicWrapperTemplate,
@@ -53,7 +55,7 @@ class TimeSeriesPreprocessor(BaseDynamicWrapperTemplate):
     If you want to see all available transformers, please visit: https://unit8co.github.io/darts/generated_api/darts.dataprocessing.transformers.html
     """
 
-    CATEGORY = "TimeSeries"
+    UIProperties = UIPropertiesMetadata(category="Darts", output_type=OutputTypes.TIMESERIES)
     WrapperEntry = WrapperEntryConfig(wrapped_object=transformers)
 
     _FIT_METHODS = ("fit", "fit_transform")
