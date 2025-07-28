@@ -9,6 +9,8 @@ from sinapsis_core.data_containers.data_packet import DataContainer, TimeSeriesP
 from sinapsis_core.template_base.base_models import OutputTypes, TemplateAttributes, UIPropertiesMetadata
 from sinapsis_core.template_base.template import Template
 
+from sinapsis_darts_forecasting.helpers.tags import Tags
+
 
 class TimeSeriesDataframeLoader(Template):
     """Template for converting Pandas DataFrames to darts TimeSeries objects
@@ -33,7 +35,11 @@ class TimeSeriesDataframeLoader(Template):
                 freq: "D"
     """
 
-    UIProperties = UIPropertiesMetadata(category="Darts", output_type=OutputTypes.TIMESERIES)
+    UIProperties = UIPropertiesMetadata(
+        category="Darts",
+        output_type=OutputTypes.TIMESERIES,
+        tags=[Tags.DARTS, Tags.DATA, Tags.DATAFRAMES, Tags.PANDAS, Tags.TIME_SERIES],
+    )
 
     class AttributesBaseModel(TemplateAttributes):
         """Defines the attributes required for the TimeSeriesDataframeLoader template.
@@ -58,12 +64,14 @@ class TimeSeriesDataframeLoader(Template):
         Returns:
             TimeSeries | None: The converted Darts TimeSeries object, or None if no data is found.
         """
-        dataframe: pd.DataFrame = getattr(time_series_packet, attribute, None)
+        dataframe: pd.DataFrame | pd.Series = getattr(time_series_packet, attribute, None)
 
         if dataframe is None:
             self.logger.warning(f"No data found in '{attribute}' to convert to TimeSeries.")
             return None
-
+        if isinstance(dataframe, pd.Series):
+            dataframe = dataframe.to_timestamp()
+            return TimeSeries.from_series(dataframe)
         return TimeSeries.from_dataframe(dataframe, **self.attributes.from_dataframe_kwargs)
 
     def execute(self, container: DataContainer) -> DataContainer:

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import torch
 from darts import TimeSeries
 from darts import models as darts_models
 from sinapsis_core.data_containers.data_packet import DataContainer, TimeSeriesPacket
@@ -12,6 +13,8 @@ from sinapsis_core.template_base.dynamic_template_factory import make_dynamic_te
 from sinapsis_core.template_base.template import Template
 from sinapsis_core.utils.env_var_keys import SINAPSIS_BUILD_DOCS
 
+from sinapsis_darts_forecasting.helpers.tags import Tags
+
 EXCLUDED_MODELS = [
     "AutoARIMA",
     "StatsForecastAutoARIMA",
@@ -19,6 +22,15 @@ EXCLUDED_MODELS = [
     "StatsForecastAutoETS",
     "StatsForecastAutoTheta",
     "StatsForecastAutoTBATS",
+    "NaiveEnsembleModel",
+    "EnsembleModel",
+    "ConformalNaiveModel",
+    "ConformalQRModel",
+    "BaseDataTransformer",
+    "FittableDataTransformer",
+    "MovingAverageFilter",
+    "GaussianProcessFilter",
+    "KalmanFilter",
 ]
 
 
@@ -49,7 +61,11 @@ class TimeSeriesModel(BaseDynamicWrapperTemplate):
     If you want to see all available models, please visit: https://unit8co.github.io/darts/generated_api/darts.models.forecasting.html
     """
 
-    UIProperties = UIPropertiesMetadata(category="Darts", output_type=OutputTypes.TIMESERIES)
+    UIProperties = UIPropertiesMetadata(
+        category="Darts",
+        output_type=OutputTypes.TIMESERIES,
+        tags=[Tags.DARTS, Tags.DYNAMIC, Tags.FORECASTING, Tags.MODELS, Tags.TIME_SERIES],
+    )
     WrapperEntry = WrapperEntryConfig(wrapped_object=darts_models, exclude_module_atts=EXCLUDED_MODELS)
 
     class AttributesBaseModel(TemplateAttributes):
@@ -141,6 +157,11 @@ class TimeSeriesModel(BaseDynamicWrapperTemplate):
             self._store_forecast_results(time_series_packet, target_series, predictions)
 
         return container
+
+    def reset_state(self, template_name: str | None = None) -> None:
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+        super().reset_state(template_name)
 
 
 def __getattr__(name: str) -> Template:

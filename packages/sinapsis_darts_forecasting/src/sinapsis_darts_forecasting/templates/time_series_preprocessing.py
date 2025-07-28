@@ -3,6 +3,7 @@
 from typing import Any, Literal
 
 import numpy as np
+import torch
 from darts import TimeSeries
 from darts.dataprocessing import transformers
 from pydantic import Field
@@ -20,6 +21,17 @@ from sinapsis_core.template_base.dynamic_template import (
 from sinapsis_core.template_base.dynamic_template_factory import make_dynamic_template
 from sinapsis_core.template_base.template import Template
 from sinapsis_core.utils.env_var_keys import SINAPSIS_BUILD_DOCS
+
+from sinapsis_darts_forecasting.helpers.tags import Tags
+
+EXCLUDED_MODULES = [
+    "WindowTransformer",
+    "StaticCovaritiesTransformer",
+    "BottomUpReconciliator",
+    "MinTReconciliatorWrapper",
+    "TopDownReconciliatorWrapper",
+    "InvertibleMapper",
+]
 
 
 class TimeSeriesPreprocessor(BaseDynamicWrapperTemplate):
@@ -55,7 +67,11 @@ class TimeSeriesPreprocessor(BaseDynamicWrapperTemplate):
     If you want to see all available transformers, please visit: https://unit8co.github.io/darts/generated_api/darts.dataprocessing.transformers.html
     """
 
-    UIProperties = UIPropertiesMetadata(category="Darts", output_type=OutputTypes.TIMESERIES)
+    UIProperties = UIPropertiesMetadata(
+        category="Darts",
+        output_type=OutputTypes.TIMESERIES,
+        tags=[Tags.DATA, Tags.DARTS, Tags.DYNAMIC, Tags.FORECASTING, Tags.PREPROCESSING, Tags.TRANSFORMS],
+    )
     WrapperEntry = WrapperEntryConfig(wrapped_object=transformers)
 
     _FIT_METHODS = ("fit", "fit_transform")
@@ -137,6 +153,7 @@ class TimeSeriesPreprocessor(BaseDynamicWrapperTemplate):
             TimeSeries | None: Transformed time series, or None if no data.
         """
         series = getattr(time_series_packet, attribute)
+
         if series is None:
             self.logger.warning(f"No data found in '{attribute}' to fit.")
             return None
@@ -196,6 +213,11 @@ class TimeSeriesPreprocessor(BaseDynamicWrapperTemplate):
                 setattr(time_series_packet, attribute, transformed_series)
 
         return container
+
+    def reset_state(self, template_name: str | None = None) -> None:
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+        super().reset_state(template_name)
 
 
 def __getattr__(name: str) -> Template:
