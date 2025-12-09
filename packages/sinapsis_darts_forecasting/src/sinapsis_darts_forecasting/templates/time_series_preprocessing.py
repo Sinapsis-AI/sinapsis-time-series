@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import copy
 from typing import Any, Literal
 
-import numpy as np
 import torch
 from darts import TimeSeries
 from darts.dataprocessing import transformers
@@ -123,7 +123,15 @@ class TimeSeriesPreprocessor(BaseDynamicWrapperTemplate):
         """
         if self.attributes.params_key is not None and hasattr(self.wrapped_callable, "_fitted_params"):
             key = self._get_params_key(attribute)
-            time_series_packet.generic_data[key] = self.wrapped_callable._fitted_params
+
+            fitted_params = self.wrapped_callable._fitted_params
+
+            if isinstance(fitted_params, list):
+                stored_params = [copy.deepcopy(getattr(p, "__dict__", p)) for p in fitted_params]
+            else:
+                stored_params = fitted_params
+
+            time_series_packet.generic_data[key] = stored_params
             self.logger.info(f"Stored transformation parameters for '{attribute}' under key '{key}'.")
 
     def _load_params(self, time_series_packet: TimeSeriesPacket, attribute: str) -> Any | None:
@@ -164,6 +172,35 @@ class TimeSeriesPreprocessor(BaseDynamicWrapperTemplate):
 
         return transformed_series
 
+    def _get_fitted_params(self, params: Any) -> Any:
+        """Rebuilds fitted transformer parameters from dictionary representations.
+
+        Args:
+            params (Any): The fitted parameters loaded from `generic_data`. This can be
+                a list of dictionaries (serialized state) or a list of objects.
+
+        Returns:
+            Any: A list of fitted transformer objects (if rehydration occurred) or the
+                original `params` if they were already valid objects.
+        """
+        if (
+            isinstance(params, list)
+            and len(params) > 0
+            and isinstance(params[0], dict)
+            and hasattr(self.wrapped_callable, "transformer")
+        ):
+            blueprint = self.wrapped_callable.transformer
+            fitted_params = []
+
+            for param_state in params:
+                new_obj = copy.deepcopy(blueprint)
+                new_obj.__dict__.update(param_state)
+                fitted_params.append(new_obj)
+
+            return fitted_params
+        else:
+            return params
+
     def _apply_transformation(self, time_series_packet: TimeSeriesPacket, attribute: str) -> TimeSeries | None:
         """Applies a transformation (transform or inverse_transform) to the specified attribute.
 
@@ -183,12 +220,9 @@ class TimeSeriesPreprocessor(BaseDynamicWrapperTemplate):
 
         params = self._load_params(time_series_packet, attribute)
 
-        if hasattr(self.wrapped_callable, "fit"):
-            dummy_series = TimeSeries.from_values(np.array([0.0, 1.0, 2.0]))
-            self.wrapped_callable.fit(dummy_series)
-
         if params is not None:
-            self.wrapped_callable._fitted_params = params
+            self.wrapped_callable._fit_called = True
+            self.wrapped_callable._fitted_params = self._get_fitted_params(params)
 
         return self.transform_func(series, **self.attributes.transform_kwargs)
 

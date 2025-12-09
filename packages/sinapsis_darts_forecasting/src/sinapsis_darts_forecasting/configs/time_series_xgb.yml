@@ -9,19 +9,19 @@ templates:
   class_name: InputTemplate
   attributes: {}
 
-- template_name: TimeSeriesDataframeLoader
-  class_name: TimeSeriesDataframeLoader
+- template_name: TimeSeriesFromDataframeLoader
+  class_name: TimeSeriesFromDataframeLoader
   template_input: InputTemplate
   attributes:
     apply_to: ["content", "past_covariates", "future_covariates"]
-    from_dataframe_kwargs:
+    from_pandas_kwargs:
       time_col: "Date"
       fill_missing_dates: True
       freq: "D"
 
 - template_name: MissingValuesFiller
   class_name: MissingValuesFillerWrapper
-  template_input: TimeSeriesDataframeLoader
+  template_input: TimeSeriesFromDataframeLoader
   attributes:
     method: "transform"
     missingvaluesfiller_init: {}

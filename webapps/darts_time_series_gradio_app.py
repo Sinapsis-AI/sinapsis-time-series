@@ -62,8 +62,8 @@ def time_series_forecasting(
     output_container = agent(container=input_container)
 
     if output_container.time_series:
-        time_series_target = output_container.time_series[0].content.pd_dataframe()
-        time_series_forecast = output_container.time_series[0].predictions.pd_dataframe()
+        time_series_target = output_container.time_series[0].content.to_dataframe()
+        time_series_forecast = output_container.time_series[0].predictions.to_dataframe()
 
         time_series_plot = get_plot(time_series_target.tail(n_values))
         time_series_forecast_plot = get_plot(time_series_forecast)

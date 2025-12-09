@@ -7,20 +7,21 @@ templates:
 - template_name: InputTemplate
   class_name: InputTemplate
   attributes: {}
-- template_name: TimeSeriesDataframeLoader
-  class_name: TimeSeriesDataframeLoader
+
+- template_name: TimeSeriesFromDataframeLoader
+  class_name: TimeSeriesFromDataframeLoader
   template_input: InputTemplate
   attributes:
     apply_to: ["content", "past_covariates", "future_covariates"]
-    from_dataframe_kwargs:
-      time_col: "date"
+    from_pandas_kwargs:
+      time_col: "Date"
       fill_missing_dates: True
       freq: "min"
       value_cols: ["open", "high", "low", "close", "Volume BTC", "Volume USD"]
 
 - template_name: MissingValuesFiller
   class_name: MissingValuesFillerWrapper
-  template_input: TimeSeriesDataframeLoader
+  template_input: TimeSeriesFromDataframeLoader
   attributes:
     method: "transform"
     missingvaluesfiller_init: {}
@@ -52,7 +53,7 @@ templates:
       batch_size: 32
       n_epochs: 50
       optimizer_kwargs:
-        "lr": 0.001
+        lr: 0.001
       random_state: 42
       pl_trainer_kwargs:
         accelerator: "gpu"

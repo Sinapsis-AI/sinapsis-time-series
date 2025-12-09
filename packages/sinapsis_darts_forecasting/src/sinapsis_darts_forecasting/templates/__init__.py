@@ -12,7 +12,9 @@ _ADDITIONAL_TEMPLATE_MODULES = [
 
 
 _template_lookup: dict = {
-    "TimeSeriesDataframeLoader": f"{_root_lib_path}.time_series_dataframe_loader",
+    "TimeSeriesFromCSVLoader": f"{_root_lib_path}.time_series_from_csv_loader",
+    "TimeSeriesFromDataframeLoader": f"{_root_lib_path}.time_series_from_dataframe_loader",
+    "TimeSeriesFromSeriesLoader": f"{_root_lib_path}.time_series_from_series_loader",
 }
 
 
