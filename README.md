@@ -127,19 +127,19 @@ templates:
   class_name: InputTemplate
   attributes: {}
 
-- template_name: TimeSeriesDataframeLoader
-  class_name: TimeSeriesDataframeLoader
+- template_name: TimeSeriesFromDataframeLoader
+  class_name: TimeSeriesFromDataframeLoader
   template_input: InputTemplate
   attributes:
     apply_to: ["content", "past_covariates", "future_covariates"]
-    from_dataframe_kwargs:
+    from_pandas_kwargs:
       time_col: "Date"
       fill_missing_dates: True
       freq: "D"
 
 - template_name: MissingValuesFiller
   class_name: MissingValuesFillerWrapper
-  template_input: TimeSeriesDataframeLoader
+  template_input: TimeSeriesFromDataframeLoader
   attributes:
     method: "transform"
     missingvaluesfiller_init: {}
@@ -178,7 +178,7 @@ The webapp provides an intuitive interface for data loading, preprocessing, and 
 > Kaggle offers a variety of datasets for forecasting. In [this-link](https://www.kaggle.com/datasets/prasoonkottarathil/btcinusd?select=BTC-Daily.csv) from Kaggle, you can find a Bitcoin historical dataset. You can download it to use it in the app. Past and future covariates datasets are optional for the analysis.
 
 > [!IMPORTANT]
-> Note that if you use another dataset, you need to change the attributes of the `TimeSeriesDataframeLoader`
+> Note that if you use another dataset, you need to change the attributes of the `TimeSeriesFromDataframeLoader`
 
 > [!IMPORTANT]
 > To run the app you first need to clone this repository:

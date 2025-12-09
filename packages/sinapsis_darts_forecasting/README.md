@@ -43,12 +43,21 @@ Example with <code>uv</code>:
 
 The **Sinapsis Darts Forecasting** provides a powerful and flexible implementation for time series forecasting using the [Darts library](https://unit8co.github.io/darts/README.html).
 <details>
-<summary><strong><span style="font-size: 1.25em;">TimeSeriesDataframeLoader</span></strong></summary>
+<summary><strong><span style="font-size: 1.25em;">TimeSeriesFromDataframeLoader</span></strong></summary>
 
-The following attributes apply to TimeSeriesDataframeLoader template:
+The following attributes apply to TimeSeriesFromDataframeLoader template:
 - **`apply_to` (list, required)**: Specifies which attribute in `TimeSeriesPacket` should be converted from Pandas DataFrame to Darts TimeSeries (content, past_covariates, future_covariates, predictions).
-- **`from_dataframe_kwargs` (dict[str, Any], optional)**: Additional arguments to pass to `TimeSeries.from_dataframe()`.
+- **`from_pandas_kwargs` (dict[str, Any], optional)**: Additional arguments to pass to `TimeSeries.from_dataframe()`.
 </details>
+
+<details>
+<summary><strong><span style="font-size: 1.25em;">TimeSeriesFromSeriesLoader</span></strong></summary>
+
+The following attributes apply to TimeSeriesFromSeriesLoader template:
+- **`apply_to` (list, required)**: Specifies which attribute in `TimeSeriesPacket` should be converted from Pandas DataFrame to Darts TimeSeries (content, past_covariates, future_covariates, predictions).
+- **`from_pandas_kwargs` (dict[str, Any], optional)**: Additional arguments to pass to `TimeSeries.from_series()`.
+</details>
+
 <details>
 <summary><strong><span style="font-size: 1.25em;">Darts Transformers</span></strong></summary>
 
@@ -74,7 +83,7 @@ Additional transformation-specific attributes can be dynamically assigned throug
 > [!TIP]
 > Use CLI command ```sinapsis info --example-template-config TEMPLATE_NAME``` to produce an example Agent config for the Template specified in ***TEMPLATE_NAME***.
 
-For example, for ***TimeSeriesDataframeLoader*** use ```sinapsis info --example-template-config TimeSeriesDataframeLoader``` to produce the following example config:
+For example, for ***TimeSeriesFromDataframeLoader*** use ```sinapsis info --example-template-config TimeSeriesFromDataframeLoader``` to produce the following example config:
 
 ```yaml
 agent:
@@ -83,12 +92,12 @@ templates:
 - template_name: InputTemplate
   class_name: InputTemplate
   attributes: {}
-- template_name: TimeSeriesDataframeLoader
-  class_name: TimeSeriesDataframeLoader
+- template_name: TimeSeriesFromDataframeLoader
+  class_name: TimeSeriesFromDataframeLoader
   template_input: InputTemplate
   attributes:
     apply_to: 'content'
-    from_dataframe_kwargs: {}
+    from_pandas_kwargs: {}
 ```
 
 <h2 id="example"> 📚 Usage Example </h2>
@@ -109,19 +118,19 @@ templates:
   class_name: InputTemplate
   attributes: {}
 
-- template_name: TimeSeriesDataframeLoader
-  class_name: TimeSeriesDataframeLoader
+- template_name: TimeSeriesFromDataframeLoader
+  class_name: TimeSeriesFromDataframeLoader
   template_input: InputTemplate
   attributes:
     apply_to: ["content", "past_covariates", "future_covariates"]
-    from_dataframe_kwargs:
+    from_pandas_kwargs:
       time_col: "Date"
       fill_missing_dates: True
       freq: "D"
 
 - template_name: MissingValuesFiller
   class_name: MissingValuesFillerWrapper
-  template_input: TimeSeriesDataframeLoader
+  template_input: TimeSeriesFromDataframeLoader
   attributes:
     method: "transform"
     missingvaluesfiller_init: {}
@@ -165,7 +174,7 @@ The webapp provides an intuitive interface for data loading, preprocessing, and 
 > Kaggle offers a variety of datasets for forecasting. In [this-link](https://www.kaggle.com/datasets/prasoonkottarathil/btcinusd?select=BTC-Daily.csv) from Kaggle, you can find a Bitcoin historical dataset. You can download it to use it in the app. Past and future covariates datasets are optional for the analysis.
 
 > [!IMPORTANT]
-> Note that if you use another dataset, you need to change the attributes of the `TimeSeriesDataframeLoader`
+> Note that if you use another dataset, you need to change the attributes of the `TimeSeriesFromDataframeLoader`
 
 
 > [!IMPORTANT]
@@ -221,7 +230,7 @@ uv sync --frozen
 ```
 2. **Install the wheel**:
 ```bash
-uv pip install sinapsis-time-series-forecasting[all] --extra-index-url https://pypi.sinapsis.tech
+uv pip install sinapsis-time-series[all] --extra-index-url https://pypi.sinapsis.tech
 ```
 
 3. **Run the webapp**:
