@@ -1,6 +1,6 @@
 [project]
 name = "sinapsis-darts-forecasting"
-version = "0.1.6"
+version = "0.1.13"
 description = "Module for handling time series data and forecasting using Darts."
 authors = [
     {name = "SinapsisAI", email = "dev@sinapsis.tech"},
