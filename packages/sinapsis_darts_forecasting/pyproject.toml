@@ -10,15 +10,14 @@ license-files = ["LICENSE"]
 requires-python = ">=3.10"
 dependencies = [
     "sinapsis>=0.1.1",
+    "u8darts[all]>=0.40.0",
 ]
 [project.optional-dependencies]
-darts = [
-    "u8darts[all]>=0.31.0",
-]
+
 pandas = [
     "pandas>=2.2.3",
 ]
-all = ["sinapsis-darts-forecasting[pandas,darts]"]
+all = ["sinapsis-darts-forecasting[pandas]"]
 
 [build-system]
 requires = ["setuptools"]
