@@ -1,0 +1,31 @@
+agent:
+  name: sktime_forecasters_agent
+  attributes:
+    queue_name: ThetaForecasterSKTimeWrapper
+
+templates:
+  - template_name: InputTemplate
+    class_name: InputTemplate
+    attributes: {}
+
+  - template_name: load_airlineWrapper
+    class_name: load_airlineWrapper
+    template_input: InputTemplate
+    attributes:
+      split_dataset: true
+      train_size: 0.8
+      store_as_time_series: True
+      load_airline:
+        {}
+
+  - template_name: ThetaForecasterSKTimeWrapper
+    class_name: ThetaForecasterSKTimeWrapper
+    template_input: load_airlineWrapper
+    attributes:
+      generic_field_key: load_airlineWrapper
+      n_steps_ahead: 12
+      forecast_horizon_in_fit: true
+      model_save_path: "artifacts/theta_forecaster.pkl"
+      task_type: "forecasting"
+      thetaforecaster_init:
+        sp: 12

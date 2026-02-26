@@ -1,0 +1,30 @@
+agent:
+  name: sktime_forecasters_agent
+
+templates:
+  - template_name: InputTemplate
+    class_name: InputTemplate
+    attributes: {}
+
+  - template_name: load_airlineWrapper
+    class_name: load_unit_testWrapper
+    template_input: InputTemplate
+    attributes:
+      split_dataset: true
+      train_size: 0.8
+      store_as_time_series: True
+      load_unit_test:
+        {}
+
+  - template_name: ElasticEnsembleSKTimeWrapper
+    class_name: ElasticEnsembleSKTimeWrapper
+    template_input: load_airlineWrapper
+    attributes:
+      generic_field_key: load_airlineWrapper
+      n_steps_ahead: 12
+      forecast_horizon_in_fit: true
+      model_save_path: "artifacts/elastice_ensemble.pkl"
+      task_type: "forecasting"
+      elasticensemble_init:
+        proportion_of_param_options: 0.1
+        proportion_train_for_test: 0.1
