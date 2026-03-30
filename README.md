@@ -25,6 +25,8 @@ Sinapsis Time Series Forecasting
 This monorepo currently consists of the following packages to handle time-series data:
 
 * <code>sinapsis-darts-forecasting</code>
+* <code>sinapsis-sktime</code>
+* <code>sinapsis-timesfm</code>
 
 Install using your package manager of choice. We encourage the use of <code>uv</code>
 
@@ -65,13 +67,31 @@ with <code>uv</code>:
 <details id='packages'><summary><strong><span style="font-size: 1.0em;"> Packages summary</span></strong></summary>
 
 
-- **Sinapsis Darts Forecasting**
-    - **Dataframe Loader**\
-    _Convert a pandas Dataframe into a Darts TimeSeries object._
-    - **Darts Transforms**\
-    _Apply several data transformations using Darts transformers to different sources in the time series packet._
-    - **Darts Models**\
-    _Fit and predict data inside the container using Darts baseline, statistical, machine learning and deep learning models._
+- **Sinapsis Darts Forecasting** (`sinapsis-darts-forecasting`)
+  - **CSV Loader**\
+  _Load time series data from CSV files into Darts TimeSeries objects._
+  - **Dataframe Loader**\
+  _Convert a pandas DataFrame into a Darts TimeSeries object._
+  - **Series Loader**\
+  _Convert a pandas Series into a Darts TimeSeries object._
+  - **Darts Transformers**\
+  _Apply data transformations (scaling, missing value filling, etc.) using Darts transformer classes._
+  - **Darts Models**\
+  _Fit and predict using Darts baseline, statistical, machine learning, and deep learning models._
+  - **Time Series Visualization**\
+  _Generate Matplotlib images and interactive Plotly HTML charts comparing historical and forecasted values._
+  - **Time Series Metrics**\
+  _Compute Darts metrics (MAE, RMSE, MAPE, etc.) between predicted and ground-truth time series._
+
+- **Sinapsis SKTime** (`sinapsis-sktime`)
+  - **SKTime Forecasters**\
+  _Train and generate predictions using sktime forecasting models (ARIMA, AutoARIMA, ExponentialSmoothing, Theta, NaiveForecaster, and more)._
+  - **SKTime Classifiers**\
+  _Train and classify time series using sktime classification models (distance-based, dictionary-based, feature-based, deep learning, and dummy classifiers)._
+
+- **Sinapsis TimesFM** (`sinapsis-timesfm`)
+  - **TimesFM**\
+  _Perform time series forecasting using Google's TimesFM foundation model._
 </details>
 
 > [!TIP]
