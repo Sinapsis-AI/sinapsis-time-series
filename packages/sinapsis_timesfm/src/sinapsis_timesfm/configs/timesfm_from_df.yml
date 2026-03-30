@@ -1,0 +1,55 @@
+agent:
+  name: LSTMForecastingAgent
+  description: "agent to perform time series forecasting using the LSTM model from darts"
+
+templates:
+  - template_name: InputTemplate
+    class_name: InputTemplate
+    attributes: {}
+
+  - template_name: CSVReader
+    class_name: CSVDatasetReader
+    template_input: InputTemplate
+    attributes:
+      root_dir: ./artifacts
+      path_to_csv: bitcoin.csv
+      store_as_time_series: true
+
+  - template_name: TimesFM
+    class_name: TimesFM
+    template_input: CSVReader
+    attributes:
+      validation_mode: True
+      model_name: "google/timesfm-2.5-200m-pytorch"
+      device: "cpu"
+      time_series_output_format: "darts_series" # options: "pandas_dataframe", "darts_series"
+      forecasting_config:
+        max_context: 1024
+        max_horizon: 256
+        normalize_inputs: true
+        use_continuous_quantile_head: true
+        force_flip_invariance: true
+        infer_is_positive: true
+        fix_quantile_crossing: true
+
+      forecast_horizon: 30
+
+  - template_name: MAETimeSeriesMetrics
+    class_name: maeTimeSeriesWrapper
+    template_input: TimesFM
+    attributes:
+      mae: {}
+
+  - template_name: TimeSeriesVisualization
+    class_name: TimeSeriesVisualization
+    template_input: MAETimeSeriesMetrics
+    attributes:
+      root_dir: artifacts/html_viz
+      html_figure_save_path: "forecast_plot.html"
+
+  - template_name: ImageSaver
+    class_name: ImageSaver
+    template_input: TimeSeriesVisualization
+    attributes:
+      save_dir: image_viz
+      root_dir: artifacts/image_viz

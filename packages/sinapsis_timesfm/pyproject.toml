@@ -1,0 +1,74 @@
+[project]
+name = "sinapsis-timesfm"
+version = "0.1.0"
+description = "Module for time series forecasting using Google's TimesFM foundation model."
+readme = "README.md"
+authors = [
+    {name = "SinapsisAI", email = "dev@sinapsis.tech"},
+]
+license = { file = "LICENSE"}
+requires-python = ">=3.10"
+dependencies = [
+    "darts>=0.40.0",
+    "numpy>=1.26.4",
+    "pandas>=2.3.3",
+    "sinapsis>=0.2.26",
+    "timesfm",
+]
+
+[project.optional-dependencies]
+torch = [
+    "timesfm[torch]>=2.0.0",
+]
+flax = [
+    "timesfm[flax]>=2.0.0",
+]
+xreg = [
+    "timesfm[xreg]>=2.0.0",
+]
+all = [
+    "sinapsis-timesfm[flax,torch,xreg,sinapsis-darts-forecasting, sinapsis-data-readers]",
+]
+sinapsis-darts-forecasting = [
+    "sinapsis-darts-forecasting",
+]
+sinapsis-data-readers = [
+    "sinapsis-data-readers>=0.1.28",
+]
+
+[[tool.uv.index]]
+url = "https://pypi.sinapsis.tech/"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.uv.sources]
+timesfm = { git = "https://github.com/google-research/timesfm" }
+sinapsis-timefm = { workspace = true }
+sinapsis-darts-forecasting = { workspace = true }
+
+
+[tool.ruff]
+lint.select = [
+    "ARG",
+    "BLE",
+    "C4",
+    "E",
+    "F",
+    "FIX",
+    "FLY",
+    "I",
+    "PERF",
+    "PIE",
+    "RUF",
+    "RSE",
+    "SIM",
+    "SLOT",
+    "T10",
+    "T20",
+    "TD",
+    "TID",
+]
+line-length = 120
+show-fixes = true
