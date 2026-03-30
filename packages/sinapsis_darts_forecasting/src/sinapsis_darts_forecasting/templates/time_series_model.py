@@ -58,7 +58,8 @@ class TimeSeriesModel(BaseDynamicWrapperTemplate):
             learning_rate: 0.1
             max_depth: 6
     For a full list of options use the sinapsis cli: sinapsis info --all-template-names
-    If you want to see all available models, please visit: https://unit8co.github.io/darts/generated_api/darts.models.forecasting.html
+    If you want to see all available models, please visit:
+    https://unit8co.github.io/darts/generated_api/darts.models.forecasting.html
     """
 
     UIProperties = UIPropertiesMetadata(
@@ -73,9 +74,14 @@ class TimeSeriesModel(BaseDynamicWrapperTemplate):
 
         Attributes:
             - forecast_horizon (int): Number of future time steps the model should predict.
+            - validation_mode (bool): If True, the model will be trained on all but the last `forecast_horizon` time
+            steps of the target series, and predictions will be generated for the last `forecast_horizon` time steps.
+            If False, the model will be trained on the entire target series and predictions will be generated for the
+            next `forecast_horizon` time steps.
         """
 
         forecast_horizon: int = 10
+        validation_mode: bool = False
 
     @staticmethod
     def _store_forecast_results(
@@ -109,9 +115,21 @@ class TimeSeriesModel(BaseDynamicWrapperTemplate):
         fit_params = {"series": target_series}
 
         if past_covariates is not None:
-            fit_params["past_covariates"] = past_covariates
+            if self.wrapped_callable.supports_past_covariates:
+                fit_params["past_covariates"] = past_covariates
+            else:
+                self.logger.warning(
+                    f"The model {self.wrapped_callable.__class__.__name__} does not support past covariates. "
+                    f"Ignoring provided past covariates."
+                )
         if future_covariates is not None:
-            fit_params["future_covariates"] = future_covariates
+            if self.wrapped_callable.supports_future_covariates:
+                fit_params["future_covariates"] = future_covariates
+            else:
+                self.logger.warning(
+                    f"The model {self.wrapped_callable.__class__.__name__} does not support future covariates. "
+                    f"Ignoring provided future covariates."
+                )
 
         self.wrapped_callable.fit(**fit_params)
 
@@ -132,9 +150,21 @@ class TimeSeriesModel(BaseDynamicWrapperTemplate):
         predict_params = {"n": self.attributes.forecast_horizon}
 
         if past_covariates is not None:
-            predict_params["past_covariates"] = past_covariates
+            if self.wrapped_callable.supports_past_covariates:
+                predict_params["past_covariates"] = past_covariates
+            else:
+                self.logger.warning(
+                    f"The model {self.wrapped_callable.__class__.__name__} does not support past covariates. "
+                    f"Ignoring provided past covariates."
+                )
         if future_covariates is not None:
-            predict_params["future_covariates"] = future_covariates
+            if self.wrapped_callable.supports_future_covariates:
+                predict_params["future_covariates"] = future_covariates
+            else:
+                self.logger.warning(
+                    f"The model {self.wrapped_callable.__class__.__name__} does not support future covariates. "
+                    f"Ignoring provided future covariates."
+                )
 
         return self.wrapped_callable.predict(**predict_params)
 
@@ -150,10 +180,17 @@ class TimeSeriesModel(BaseDynamicWrapperTemplate):
         """
         for time_series_packet in container.time_series:
             target_series = time_series_packet.content
+
+            train_series = (
+                target_series[: -self.attributes.forecast_horizon] if self.attributes.validation_mode else target_series
+            )
+
             past_covariates = time_series_packet.past_covariates
             future_covariates = time_series_packet.future_covariates
-            self._fit_model(target_series, past_covariates, future_covariates)
+
+            self._fit_model(train_series, past_covariates, future_covariates)
             predictions = self._generate_predictions(past_covariates, future_covariates)
+
             self._store_forecast_results(time_series_packet, target_series, predictions)
 
         return container

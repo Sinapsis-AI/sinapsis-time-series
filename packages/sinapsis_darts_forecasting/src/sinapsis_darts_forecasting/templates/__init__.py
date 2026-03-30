@@ -7,6 +7,7 @@ from sinapsis.templates import _import_template_package
 _root_lib_path = "sinapsis_darts_forecasting.templates"
 _ADDITIONAL_TEMPLATE_MODULES = [
     f"{_root_lib_path}.time_series_model",
+    f"{_root_lib_path}.time_series_metrics",
     f"{_root_lib_path}.time_series_preprocessing",
 ]
 
@@ -15,6 +16,7 @@ _template_lookup: dict = {
     "TimeSeriesFromCSVLoader": f"{_root_lib_path}.time_series_from_csv_loader",
     "TimeSeriesFromDataframeLoader": f"{_root_lib_path}.time_series_from_dataframe_loader",
     "TimeSeriesFromSeriesLoader": f"{_root_lib_path}.time_series_from_series_loader",
+    "TimeSeriesVisualization": f"{_root_lib_path}.time_series_visualization",
 }
 
 

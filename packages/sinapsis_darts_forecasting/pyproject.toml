@@ -1,6 +1,6 @@
 [project]
 name = "sinapsis-darts-forecasting"
-version = "0.1.13"
+version = "0.1.14"
 description = "Module for handling time series data and forecasting using Darts."
 authors = [
     {name = "SinapsisAI", email = "dev@sinapsis.tech"},
@@ -17,7 +17,16 @@ dependencies = [
 pandas = [
     "pandas>=2.2.3",
 ]
-all = ["sinapsis-darts-forecasting[pandas]"]
+all = [
+    "sinapsis-darts-forecasting[pandas,time-series-visualization]",
+]
+time-series-visualization = [
+    "matplotlib>=3.10.8",
+    "numpy>=1.26.4",
+    "pandas>=2.3.3",
+    "pillow>=11.3.0",
+    "plotly>=6.6.0",
+]
 
 [build-system]
 requires = ["setuptools"]
@@ -26,6 +35,9 @@ build-backend = "setuptools.build_meta"
 
 [[tool.uv.index]]
 url = "https://pypi.sinapsis.tech/"
+
+[tool.uv.sources]
+sinapsis-darts-forecasting = { workspace = true }
 
 [project.urls]
 Homepage = "https://sinapsis.tech"

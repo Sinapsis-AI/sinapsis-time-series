@@ -1,0 +1,37 @@
+agent:
+  name: ProphetForecastingAgent
+  description: 'agent to perform time series forecasting using the Prophet model from darts'
+
+
+templates:
+
+- template_name: InputTemplate
+  class_name: InputTemplate
+  attributes: {}
+
+- template_name: CSVReader
+  class_name: CSVDatasetReader
+  template_input: InputTemplate
+  attributes:
+    root_dir: ./artifacts
+    path_to_csv: bitcoin.csv
+    store_as_time_series: true
+
+- template_name: TimeSeriesFromDataframeLoader-1
+  class_name: TimeSeriesFromDataframeLoader
+  template_input: CSVReader
+  attributes:
+    apply_to: ["content"]
+    from_pandas_kwargs:
+      value_cols: "Volume BTC"
+      time_col: "Date"
+      fill_missing_dates: True
+      freq: "D"
+
+
+- template_name: TimeSeries
+  class_name: ARIMAWrapper
+  template_input: TimeSeriesFromDataframeLoader-1
+  attributes:
+    forecast_horizon: 30
+    arima_init: {}

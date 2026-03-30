@@ -1,0 +1,62 @@
+agent:
+  name: ProphetForecastingAgent
+  description: 'agent to perform time series forecasting using the Prophet model from darts'
+
+
+templates:
+
+- template_name: InputTemplate
+  class_name: InputTemplate
+  attributes: {}
+
+- template_name: TimeSeriesFromCSVLoader
+  class_name: TimeSeriesFromCSVLoader
+  template_input: InputTemplate
+  attributes:
+    root_dir: .
+    assign_to: "content"
+    loader_params:
+      path_to_csv: "bitcoin.csv"
+      time_col: "Date"
+      value_cols: "Volume BTC"
+      freq: "D"
+
+- template_name: TimeSeriesFromCSVLoader-1
+  class_name: TimeSeriesFromCSVLoader
+  template_input: TimeSeriesFromCSVLoader
+  attributes:
+    root_dir: .
+    assign_to: "content"
+    loader_params:
+      path_to_csv: "bitcoin.csv"
+      time_col: "Date"
+      value_cols: "close"
+      freq: "D"
+
+- template_name: TimeSeries
+  class_name: ARIMAWrapper
+  template_input: TimeSeriesFromCSVLoader-1
+  attributes:
+    validation_mode: True
+    forecast_horizon: 30
+    arima_init: {}
+
+- template_name: MAETimeSeriesMetrics
+  class_name: maeTimeSeriesWrapper
+  template_input: TimeSeries
+  attributes:
+    mae: {}
+
+- template_name: TimeSeriesVisualization
+  class_name: TimeSeriesVisualization
+  template_input: MAETimeSeriesMetrics
+  attributes:
+    root_dir: artifacts/arima/html_viz
+    html_figure_save_path: "forecast_plot.html"
+
+- template_name: ImageSaver
+  class_name: ImageSaver
+  template_input: TimeSeriesVisualization
+  attributes:
+    save_dir: image_viz
+    root_dir: artifacts/arima/image_viz

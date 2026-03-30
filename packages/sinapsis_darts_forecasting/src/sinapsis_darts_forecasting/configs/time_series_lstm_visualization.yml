@@ -1,0 +1,97 @@
+agent:
+  name: LSTMForecastingAgent
+  description: 'agent to perform time series forecasting using the LSTM model from darts'
+
+templates:
+
+- template_name: InputTemplate
+  class_name: InputTemplate
+  attributes: {}
+
+- template_name: TimeSeriesFromCSVLoader
+  class_name: TimeSeriesFromCSVLoader
+  template_input: InputTemplate
+  attributes:
+    root_dir: .
+    assign_to: "content"
+    loader_params:
+      path_to_csv: "bitcoin.csv"
+      time_col: "Date"
+      value_cols: "Volume BTC"
+      freq: "D"
+
+- template_name: TimeSeriesFromCSVLoader-1
+  class_name: TimeSeriesFromCSVLoader
+  template_input: TimeSeriesFromCSVLoader
+  attributes:
+    root_dir: .
+    assign_to: "past_covariates"
+    reuse_packet: true
+    loader_params:
+      path_to_csv: "bitcoin.csv"
+      time_col: "Date"
+      value_cols: ["open", "high", "low", "close", "Volume USD"]
+      freq: "D"
+
+- template_name: MissingValuesFiller
+  class_name: MissingValuesFillerWrapper
+  template_input: TimeSeriesFromCSVLoader-1
+  attributes:
+    method: "transform"
+    missingvaluesfiller_init: {}
+    apply_to: ["content", "past_covariates", "future_covariates"]
+    transform_kwargs:
+      method: "linear"
+
+- template_name: Scaler
+  class_name: ScalerWrapper
+  template_input: MissingValuesFiller
+  attributes:
+    method: "fit_transform"
+    scaler_init: {}
+    apply_to: ["content", "past_covariates", "future_covariates"]
+    params_key: "scaler"
+
+- template_name: TimeSeries
+  class_name: RNNModelWrapper
+  template_input: Scaler
+  attributes:
+    forecast_horizon: 100
+    rnnmodel_init:
+      input_chunk_length: 30
+      model: "LSTM"
+      hidden_dim: 50
+      n_rnn_layers: 2
+      dropout: 0.2
+      training_length: 100
+      batch_size: 32
+      n_epochs: 1
+      optimizer_kwargs:
+        lr: 0.001
+      random_state: 42
+      pl_trainer_kwargs:
+        accelerator: "gpu"
+
+- template_name: Unscaler
+  class_name: ScalerWrapper
+  template_input: TimeSeries
+  attributes:
+    method: "inverse_transform"
+    scaler_init: {}
+    apply_to: ["content", "past_covariates", "future_covariates", "predictions"]
+    params_key: "scaler"
+
+- template_name: TimeSeriesVisualization
+  class_name: TimeSeriesVisualization
+  template_input: Unscaler
+  attributes:
+    root_dir: artifacts/viz
+    html_figure_save_path: "forecast_plot.html"
+    validation_mode: False
+
+- template_name: ImageSaver
+  class_name: ImageSaver
+  template_input: TimeSeriesVisualization
+  attributes:
+    save_dir: image_viz
+    root_dir: artifacts/predict
